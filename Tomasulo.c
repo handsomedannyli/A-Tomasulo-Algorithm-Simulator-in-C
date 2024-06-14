@@ -6,7 +6,7 @@
 #define MAX_INSTRUCTIONS 100 // Maximum number of instructions
 #define REG_AMOUNT 32        // Number of FP registers
 #define ADDR_REG_AMOUNT 16   // Number of address registers
-#define STATIONS_N 7         // Number of stations
+#define STATIONS_N 9         // Number of stations
 
 
 typedef struct
@@ -102,12 +102,12 @@ Instruction extractInstruction(char *instructionStr)
     return rinstruct;
 }
 
-typedef struct
-{
+typedef struct{
     int busy;//unbusy:0;busy:1
     int type;//1:Load;2:Store;3:Adder;4:Multiplier
     Instruction instruction;
     int debugInstructionLine;
+    int instIndex;
 } Station;
 
 int findNoBusyStation(Station station[STATIONS_N], int type)
@@ -158,7 +158,7 @@ int dispatchInstruction(Station reservationStation[STATIONS_N], Instruction inst
     reservationStation[stationIndex].instruction.startedT = -1;
     reservationStation[stationIndex].instruction.finishedT = -1;
     reservationStation[stationIndex].instruction.writtenT = -1;
-    reservationStation[stationIndex].debugInstructionLine = instructionPosInLine + 1;
+    reservationStation[stationIndex].instIndex = instructionPosInLine;
 
     // 返回保留站的索引
     return stationIndex;
@@ -170,7 +170,7 @@ typedef struct
     int value;  // 寄存器中存储的数值
 } Register;
 
-int isRegisterFree(Register reg, short stationIndex)
+int isRegisterFree(Register reg, int stationIndex)
 {
     if (reg.busyBy == -1 || reg.busyBy == stationIndex){
         return 1;
@@ -180,25 +180,183 @@ int isRegisterFree(Register reg, short stationIndex)
 //返回1表示寄存器是空闲的，或者被指定的保留站占用,返回0表示寄存器被其他保留站占用
 
 
+void loginfo(int clock;char *inst;Instruction instList[] ,Station reservastionStation[] ,Register reg[]){
+    LOG_PATH = path;
+    FILE *file = fopen(LOG_PATH, "a");
+
+    char instName[][]{
+        "LD",
+        "SD",
+        "ADD",
+        "SUB",
+        "MUL",
+        "DIV"
+    };
+
+    char stationName[][]{
+        "Load1",
+        "Load2",
+        "Store1",
+        "Store2",
+        "Add1",
+        "Add2",
+        "Add3",
+        "Mult1",
+        "Mult2"
+    };
+
+
+
+    fprintf("Cycle:%d\n",clock);
+
+    fprintf("*\nInstruction Statue*\n")
+
+    fprintf("Instruction         ");
+    fprintf("Issue  ");
+    fprintf("Start  ");
+    fprintf("finish ");
+    fprintf("write  \n")
+    for (int i = 0; i < instructionAmount; i++){
+        fprintf("%-20s",inst[i]);
+        fprintf("%-7d",instList[i].issuedT);
+        fprintf("%-7d",instList[i].startedT);
+        fprintf("%-7d",instList[i].finishedT);
+        fprintf("%-7d\n",instList[i].writtenT);
+    }
+
+
+    fprintf("\n*Reservations Station*\n");
+    fprintf("Name    Busy    Op      Vj      Vk      Qj      Qk      \n");
+    for(int i = 0; i < STATIONS_N; i++){
+        fprintf("%-8s",stationName[i]);
+        if(reservastionStation[i].busy == 0){
+            fprintf("no      ");
+        }else{
+            fprintf("yes     ");
+        }
+
+        fprintf("%-8s",instName[reservastionStation[i].instruction.operation-1]);
+
+        in = instList[reservastionStation[i].instIndex];
+
+        intype = getType(in.operation);
+
+        int targetReg = -1;
+        int srcReg1 = -1;
+        int srcReg2 = -1;
+
+
+
+
+        if(intype == 0){
+
+            targetReg = reservationStations[i].instruction.twoReg.targetReg;
+            srcReg1 = reservationStations[i].instruction.twoReg.srcReg1;
+
+            if (isRegisterFree(reg[srcReg1], i) == 1){
+                fprintf("R[F ");
+                fprintf("%-2d",srcReg1);
+                fprintf("] ");
+                fprintf("                        ");
+            }
+            if (isRegisterFree(reg[srcReg1], i) == 0){
+                fprintf("                ");
+                fprintf("%-8s",stationName[reg[srcReg1].busyBy]);
+                printf("        ");
+            }
+        }
+
+        if(intype == 1){
+            targetReg = reservationStations.instruction.threeReg.targetReg;
+            srcReg1 = reservationStations[i].instruction.threeReg.srcReg1;
+            srcReg2 = reservationStations[i].instruction.threeReg.srcReg2;
+
+            if (isRegisterFree(reg[srcReg1], i) == 1  && isRegisterFree(reg[srcReg2], i) == 1){
+                fprintf("R[F ");
+                fprintf("%-2d",srcReg1);
+                fprintf("] ");
+                fprintf("R[F ");
+                fprintf("%-2d",srcReg2);
+                fprintf("] ");
+                fprintf("                ");
+            }
+            if (isRegisterFree(reg[srcReg1], i) == 1  && isRegisterFree(reg[srcReg2], i) == 0){
+                fprintf("R[F ");
+                fprintf("%-2d",srcReg1);
+                fprintf("] ");
+                fprintf("                ");
+                fprintf("%-8s",stationName[reg[srcReg2].busyBy]);
+            }
+            if (isRegisterFree(reg[srcReg1], i) == 0  && isRegisterFree(reg[srcReg2], i) == 1){
+                fprintf("        ");
+                fprintf("R[F ");
+                fprintf("%-2d",srcReg2);
+                fprintf("] ");
+                fprintf("%-8s",stationName[reg[srcReg1].busyBy]);
+                fprintf("        ");
+            }
+            if (isRegisterFree(reg[srcReg1], i) == 0  && isRegisterFree(reg[srcReg2], i) == 0){
+                fprintf("                ");
+                fprintf("%-8s",stationName[reg[srcReg1].busyBy]);
+                fprintf("%-8s",stationName[reg[srcReg2].busyBy]);
+            }
+            fprintf("\n");
+
+        }
+
+
+    }
+
+    fprintf("\n*Register*\n");
+    for (int i = 0; i < REG_AMOUNT; i++){
+        fprintf("F");
+        fprintf("%-2d",i);
+        fprintf("   ");
+    }
+    fprintf("\n");
+    for (int i = 0; i < REG_AMOUNT; i++){
+        if(reg[i].busyBy == -1){
+            fprintf("      ");
+        }else{
+            fprintf("%-6s",stationName[reg[i].busyBy);
+        }
+    }
+    fprintf("\n");
+    for (int i = 0; i < REG_AMOUNT; i++){
+        fprintf("%-6d",reg[i].value);
+    }
+    fprintf("\n");
+
+
+    fclose(file);
+
+}
+
+
+
 
 void main (){
-    char* inst = (char*)malloc(sizeof(char)*30);
+
+
 
     Register registers[REG_AMOUNT];
-    for (short i = 0; i < REG_AMOUNT; i++){
+    for (int i = 0; i < REG_AMOUNT; i++){
         registers[i].busyBy = -1;
         registers[i].value = i;
     }
     //初始化寄存器表
 
     Station reservationStations[STATIONS_N] = {
-        {0, 3, 0, 0},
-        {0, 3, 0, 0},
-        {0, 4, 0, 0},
-        {0, 1, 0, 0},
-        {0, 1, 0, 0},
-        {0, 2, 0, 0},
-        {0, 2, 0, 0}};
+        {0, 1, 0, 0, -1},
+        {0, 1, 0, 0, -1},
+        {0, 2, 0, 0, -1},
+        {0, 2, 0, 0, -1},
+        {0, 3, 0, 0, -1},
+        {0, 3, 0, 0, -1},
+        {0, 3, 0, 0, -1},
+        {0, 4, 0, 0, -1},
+        {0, 4, 0, 0, -1}};
+
     //初始化保留站
 
     int currentPos = 0;
