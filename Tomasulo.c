@@ -238,19 +238,21 @@ void main (){
             int srcReg2 = -1;
             //初始化与当前指令相关的寄存器编号
 
-            if (reservationStations[i].instruction.startedT == -1){
-                int instType = getType(reservationStations[i].instruction.operation);
+            int instType = getType(reservationStations[i].instruction.operation);
 
-                if(instType == 0){
-                    targetReg = reservationStations[i].instruction.twoReg.targetReg;
-                    srcReg1 = reservationStations[i].instruction.twoReg.srcReg1;
-                    srcReg2 = srcReg1;
-                }
-                if(instType == 1){
-                    targetReg = reservationStations.instruction.threeReg.targetReg;
-                    srcReg1 = reservationStations[i].instruction.threeReg.srcReg1;
-                    srcReg2 = reservationStations[i].instruction.threeReg.srcReg2;
-                }
+            if(instType == 0){
+                targetReg = reservationStations[i].instruction.twoReg.targetReg;
+                srcReg1 = reservationStations[i].instruction.twoReg.srcReg1;
+                srcReg2 = srcReg1;
+            }
+            if(instType == 1){
+                targetReg = reservationStations.instruction.threeReg.targetReg;
+                srcReg1 = reservationStations[i].instruction.threeReg.srcReg1;
+                srcReg2 = reservationStations[i].instruction.threeReg.srcReg2;
+            }
+            //获得指令相关寄存器编号
+
+            if (reservationStations[i].instruction.startedT == -1){
 
                 if (isRegisterFree(registers[targetReg], i) == 0){
                     logDependencyRegister(associatedRegisters[0], reservationStations[i].debugInstructionLine);
@@ -275,18 +277,7 @@ void main (){
 
             if (reservationStations[i].instruction.writtenT == clock){
 
-                int instType = getType(reservationStations[i].instruction.operation);
 
-                if(instType == 0){
-                    targetReg = reservationStations[i].instruction.twoReg.targetReg;
-                    srcReg1 = reservationStations[i].instruction.twoReg.srcReg1;
-                    srcReg2 = srcReg1;
-                }
-                if(instType == 1){
-                    targetReg = reservationStations.instruction.threeReg.targetReg;
-                    srcReg1 = reservationStations[i].instruction.threeReg.srcReg1;
-                    srcReg2 = reservationStations[i].instruction.threeReg.srcReg2;
-                }
 
                 logInstructionStep(3, reservationStations[i].debugInstructionLine);
 
@@ -294,17 +285,76 @@ void main (){
                 reservationStations[i].busy = 0;
                 continue;
             }
-            //获取targetReg并将其设置为空闲,释放保留站
+            //将targetReg设置为空闲,释放保留站
 
+            if ((reservationStations[i].instruction.startedAt + getOperationTime(reservationStations[i].instruction.operation)) <= clock){
+                //开始时间 + 执行时间 <= 当前时钟周期，说明指令已经完成
+                getAssociatedRegisters(associatedRegisters, reservationStations[i].instruction);
+                logInstructionStep(2, reservationStations[i].debugInstructionLine);
+                int op  = reservationStations[i].instruction.operation;
+                int result = 0;
 
+                if(op == 1 || op == 2){
+                    registers[targetReg].value = registers[srcReg1].value;
+                    break;
+                }
 
+                if(op == 3){
+                    result = registers[srcReg1].value + registers[srcReg2].value;
+                    registers[targetReg].value = result;
+                    break;
+                }
 
+                if(op == 4){
+                    result = registers[srcReg1].value - registers[srcReg2].value;
+                    registers[targetReg].value = result;
+                    break;
+                }
 
+                if(op == 5){
+                    result = registers[srcReg1].value * registers[srcReg2].value;
+                    registers[targetReg].value = result;
+                    break;
+                }
 
+                if(op == 6){
+                    if(registers[srcReg2].value == 0){
+                        result = registers[srcReg1].value / 1;
+                        registers[targetReg].value = result;
+                    }else{
+                        result = registers[srcReg1].value / registers[srcReg2].value;
+                        registers[targetReg].value = result;
+                    }
+                    break;
+                }
 
+                reservationStations[i].instruction.finishedT = clock;
+                reservationStations[i].instruction.writtenT = clock + 1;
+                continue;
 
+            }
 
         }
+
+        logRegisters(registers, reservationStations);
+        logStations(reservationStations);
+        clock += 1;
+
+        if (clock >= 10)
+        {
+            int allDone = 1;
+            for (int i = 0; i < STATIONS_AMOUNT; i++)
+            {
+                if (reservationStations[i].busy == 1)
+                    allDone = 0;
+            }
+            if (allDone == 1)
+                return 0;
+        }
+
+
+        if (clock >= 1000)
+            return 0;
 
     }
 
