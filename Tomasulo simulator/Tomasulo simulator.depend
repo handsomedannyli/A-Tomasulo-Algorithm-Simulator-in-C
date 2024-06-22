@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1718462820 source:d:\tomasulo simulator\main.c
+	<string.h>
+	<stdio.h>
+	<stdlib.h>
+
