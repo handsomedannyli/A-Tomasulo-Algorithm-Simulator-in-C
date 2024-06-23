@@ -225,6 +225,51 @@ void printTime(int inTime){
     }
 }
 
+int compareFiles(const char *file1, const char *file2) {
+    FILE *fp1 = fopen(file1, "rb");
+    FILE *fp2 = fopen(file2, "rb");
+
+    if (fp1 == NULL || fp2 == NULL) {
+        perror("Error opening file");
+        if (fp1) fclose(fp1);
+        if (fp2) fclose(fp2);
+        return -1;
+    }
+
+    int ch1, ch2;
+    int position = 0;
+
+    do {
+        ch1 = fgetc(fp1);
+        ch2 = fgetc(fp2);
+        position++;
+
+        if (ch1 != ch2) {
+            printf("Files differ at byte %d\n", position);
+            fclose(fp1);
+            fclose(fp2);
+            return 1;
+        }
+    } while (ch1 != EOF && ch2 != EOF);
+
+    if (feof(fp1) && feof(fp2)) {
+        printf("Files are identical.\n");
+        fclose(fp1);
+        fclose(fp2);
+        return 0;
+    } else {
+        if (!feof(fp1)) {
+            printf("File 1 has extra content after byte %d.\n", position);
+        } else if (!feof(fp2)) {
+            printf("File 2 has extra content after byte %d.\n", position);
+        }
+        fclose(fp1);
+        fclose(fp2);
+        return 1;
+    }
+}
+
+
 char test_1[][20] = {
         "LD F6,34(R2)",
         "LD F2,45(R3)",
@@ -264,12 +309,11 @@ char test_3[][20] = {
 
 void main (){
 
-    printf("begin");
-
     char inputInstructions[6][20];
+    char inputInstructionscopy[6][20];
     int test_case = 0;
 
-    printf("select a test case(1,2,3):\n");
+    printf("Press（1，2，3）to select a test case|Press 0 to enter instructions\n");
     scanf("%d",&test_case);
 
     if(test_case == 1) memcpy(inputInstructions, test_1, sizeof(test_1));
@@ -277,6 +321,18 @@ void main (){
     if(test_case == 2) memcpy(inputInstructions, test_2, sizeof(test_1));
 
     if(test_case == 3) memcpy(inputInstructions, test_3, sizeof(test_1));
+
+    if(test_case == 0){
+        printf("Enter the instruction:\n");
+        for(int i = 0 ;i<INSTRUCTION_AMOUNT;i++){
+            fgets(inputInstructions[i], sizeof(inputInstructions), stdin);
+
+            // 去掉换行符
+            inputInstructions[i][strcspn(inputInstructions[i], "\n")] = '\0';
+        }
+        memcpy(inputInstructionscopy, inputInstructions, sizeof(inputInstructions));
+    }
+
 
     printf("test case:\n");
 
@@ -342,7 +398,7 @@ void main (){
 
         for (int i = 0; i < STATIONS_N; i++){
 
-            printf("station:%s|busy:%d\n",stationName[i],reservationStations[i].busy);
+            //printf("station:%s|busy:%d\n",stationName[i],reservationStations[i].busy);
 
             if (reservationStations[i].busy == 0){
                 //printf("保留站不忙（busy 为 0），跳过该保留站，继续检查下一个\n");
@@ -532,6 +588,8 @@ void main (){
 
         if(test_case == 3) memcpy(inputInstructions, test_3, sizeof(test_1));
 
+        if(test_case == 0) memcpy(inputInstructions, inputInstructionscopy,sizeof(inputInstructionscopy));
+
         printf("\n===============================================================================\n");
 
 
@@ -692,11 +750,22 @@ void main (){
                 if (reservationStations[i].busy == 1)
                     allDone = 0;
             }
-            if (allDone == 1)
+            if (allDone == 1){
+
+                const char *file1 = "out.txt";
+                const char *file2 = "ans.txt";
+
+                int result = compareFiles(file1, file2);
+                if (result == 0) {
+                    printf("The output is correct.\n");
+                } else if (result == 1) {
+                    printf("The output is incorrect.\n");
+                }
+
                 return 0;
+            }
+
         }
-
-
         if (clock >= 1000)
             return 0;
 
