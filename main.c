@@ -2,12 +2,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#define MAX_INSTR_LENGTH 25  // Maximum length of each instruction
-#define MAX_INSTRUCTIONS 100 // Maximum number of instructions
-#define REG_AMOUNT 32        // Number of FP registers
-#define ADDR_REG_AMOUNT 16   // Number of address registers
-#define STATIONS_N 9         // Number of stations
-#define INSTRUCTION_AMOUNT 6
+#define MAX_INSTR_LENGTH 25  // 指令的最大长度
+#define MAX_INSTRUCTIONS 100 // 最大指令数
+#define REG_AMOUNT 13        // 浮点数寄存器数量
+#define STATIONS_N 9         // 保留站数量
+#define INSTRUCTION_AMOUNT 6 // 指令数量
 
 typedef struct
 {
@@ -70,20 +69,19 @@ int getType(int op)
 
 int getOperationTime(int op){
     if (op == 1 || op == 2)
-        return 1;
-    if (op == 3 || op == 4 )
         return 2;
+    if (op == 3 || op == 4 )
+        return 3;
     if (op == 5)
-        return 9;
+        return 10;
     if (op == 6)
-        return 39;
+        return 40;
 }
 
 
 Instruction extractInstruction(char *instructionStr)
 {
     Instruction rinstruct;
-    //remove_newline(instructionStr);
     char *regStr;
     char *opStr = strtok_r(instructionStr, " ", &regStr);
 
@@ -108,6 +106,7 @@ Instruction extractInstruction(char *instructionStr)
     rinstruct.startedT = -1;
     rinstruct.finishedT = -1;
     rinstruct.writtenT = -1;
+
     //时间初始化
 
     return rinstruct;
@@ -119,6 +118,10 @@ typedef struct{
     Instruction instruction;
     int debugInstructionLine;
     int instIndex;
+    int src1;
+    int src2;
+    int depend1;
+    int depend2;
 } Station;
 
 int findNoBusyStation(Station station[STATIONS_N], int type)
@@ -190,174 +193,6 @@ int isRegisterFree(Register reg, int stationIndex)
 //返回1表示寄存器是空闲的，或者被指定的保留站占用,返回0表示寄存器被其他保留站占用
 
 
-void loginfo(int clock, char *inst, Instruction instList[] ,Station reservationStation[] ,Register reg[]){
-    FILE *file = fopen("./out.txt", "w");
-
-    char instName[6][4] = {
-        "LD",
-        "SD",
-        "ADD",
-        "SUB",
-        "MUL",
-        "DIV"
-    };
-
-    char stationName[9][8] = {
-        "Load1",
-        "Load2",
-        "Store1",
-        "Store2",
-        "Add1",
-        "Add2",
-        "Add3",
-        "Mult1",
-        "Mult2"
-    };
-
-
-
-    fprintf("Cycle:%d\n",clock);
-
-    fprintf(file,"\n*Instruction Statue*\n");
-
-    fprintf(file,"Instruction         ");
-    fprintf(file,"Issue  ");
-    fprintf(file,"Start  ");
-    fprintf(file,"finish ");
-    fprintf(file,"write  \n");
-    for (int i = 0; i < INSTRUCTION_AMOUNT; i++){
-        fprintf(file,"%-20s",inst[i]);
-        if(clock>=instList[i].issuedT  && instList[i].issuedT != -1){
-            fprintf(file,"%-7d",instList[i].issuedT);
-        }else{
-            fprintf(file,"       ");
-        }
-        if(clock>=instList[i].startedT  && instList[i].startedT != -1){
-            fprintf(file,"%-7d",instList[i].startedT);
-        }else{
-            fprintf(file,"       ");
-        }
-        if(clock>=instList[i].finishedT  && instList[i].finishedT != -1){
-            fprintf(file,"%-7d",instList[i].finishedT);
-        }else{
-            fprintf(file,"       ");
-        }
-
-        if(clock>=instList[i].writtenT  && instList[i].writtenT != -1){
-            fprintf(file,"%-7d\n",instList[i].writtenT);
-        }else{
-            fprintf(file,"       ");
-        }
-
-    }
-
-
-    fprintf(file,"\n*Reservations Station*\n");
-    fprintf(file,"Name    Busy    Op      Vj      Vk      Qj      Qk      \n");
-    for(int i = 0; i < STATIONS_N; i++){
-        fprintf(file,"%-8s",stationName[i]);
-        if(reservationStation[i].busy == 0){
-            fprintf(file,"no      ");
-        }else{
-            fprintf(file,"yes     ");
-        }
-
-        fprintf(file,"%-8s",instName[reservationStation[i].instruction.operation-1]);
-
-        Instruction in = instList[reservationStation[i].instIndex];
-
-        int intype = getType(in.operation);
-
-        int targetReg = -1;
-        int srcReg1 = -1;
-        int srcReg2 = -1;
-
-
-
-
-        if(intype == 0){
-
-            targetReg = reservationStation[i].instruction.twoReg.targetReg;
-            srcReg1 = reservationStation[i].instruction.twoReg.srcReg1;
-
-            if (isRegisterFree(reg[srcReg1], i) == 1){
-                fprintf(file,"R[F ");
-                fprintf(file,"%-2d",srcReg1);
-                fprintf(file,"] ");
-                fprintf(file,"                        ");
-            }
-            if (isRegisterFree(reg[srcReg1], i) == 0){
-                fprintf(file,"                ");
-                fprintf(file,"%-8s",stationName[reg[srcReg1].busyBy]);
-                printf(file,"        ");
-            }
-        }
-
-        if(intype == 1){
-            targetReg = reservationStation[i].instruction.threeReg.targetReg;
-            srcReg1 = reservationStation[i].instruction.threeReg.srcReg1;
-            srcReg2 = reservationStation[i].instruction.threeReg.srcReg2;
-
-            if (isRegisterFree(reg[srcReg1], i) == 1  && isRegisterFree(reg[srcReg2], i) == 1){
-                fprintf(file,"R[F ");
-                fprintf(file,"%-2d",srcReg1);
-                fprintf(file,"] ");
-                fprintf(file,"R[F ");
-                fprintf(file,"%-2d",srcReg2);
-                fprintf(file,"] ");
-                fprintf(file,"                ");
-            }
-            if (isRegisterFree(reg[srcReg1], i) == 1  && isRegisterFree(reg[srcReg2], i) == 0){
-                fprintf(file,"R[F ");
-                fprintf(file,"%-2d",srcReg1);
-                fprintf(file,"] ");
-                fprintf(file,"                ");
-                fprintf(file,"%-8s",stationName[reg[srcReg2].busyBy]);
-            }
-            if (isRegisterFree(reg[srcReg1], i) == 0  && isRegisterFree(reg[srcReg2], i) == 1){
-                fprintf(file,"        ");
-                fprintf(file,"R[F ");
-                fprintf(file,"%-2d",srcReg2);
-                fprintf(file,"] ");
-                fprintf(file,"%-8s",stationName[reg[srcReg1].busyBy]);
-                fprintf(file,"        ");
-            }
-            if (isRegisterFree(reg[srcReg1], i) == 0  && isRegisterFree(reg[srcReg2], i) == 0){
-                fprintf(file,"                ");
-                fprintf(file,"%-8s",stationName[reg[srcReg1].busyBy]);
-                fprintf(file,"%-8s",stationName[reg[srcReg2].busyBy]);
-            }
-            fprintf(file,"\n");
-
-        }
-
-
-    }
-
-    fprintf(file,"\n*Register*\n");
-    for (int i = 0; i < REG_AMOUNT; i++){
-        fprintf(file,"F");
-        fprintf(file,"%-2d",i);
-        fprintf(file,"   ");
-    }
-    fprintf(file,"\n");
-    for (int i = 0; i < REG_AMOUNT; i++){
-        if(reg[i].busyBy == -1){
-            fprintf(file,"      ");
-        }else{
-            fprintf(file,"%-6s",stationName[reg[i].busyBy]);
-        }
-    }
-    fprintf(file,"\n");
-    for (int i = 0; i < REG_AMOUNT; i++){
-        fprintf(file,"%-6d",reg[i].value);
-    }
-    fprintf(file,"\n");
-
-
-    fclose(file);
-
-}
 
 const char stationName[9][8] = {
         "Load1",
@@ -390,49 +225,149 @@ void printTime(int inTime){
     }
 }
 
+int compareFiles(const char *file1, const char *file2) {
+    FILE *fp1 = fopen(file1, "rb");
+    FILE *fp2 = fopen(file2, "rb");
 
-void main (){
+    if (fp1 == NULL || fp2 == NULL) {
+        perror("Error opening file");
+        if (fp1) fclose(fp1);
+        if (fp2) fclose(fp2);
+        return -1;
+    }
 
-    printf("begin");
+    int ch1, ch2;
+    int position = 0;
 
-    char inputInstructions[][20] = {
+    do {
+        ch1 = fgetc(fp1);
+        ch2 = fgetc(fp2);
+        position++;
+
+        if (ch1 != ch2) {
+            printf("Files differ at byte %d\n", position);
+            fclose(fp1);
+            fclose(fp2);
+            return 1;
+        }
+    } while (ch1 != EOF && ch2 != EOF);
+
+    if (feof(fp1) && feof(fp2)) {
+        printf("Files are identical.\n");
+        fclose(fp1);
+        fclose(fp2);
+        return 0;
+    } else {
+        if (!feof(fp1)) {
+            printf("File 1 has extra content after byte %d.\n", position);
+        } else if (!feof(fp2)) {
+            printf("File 2 has extra content after byte %d.\n", position);
+        }
+        fclose(fp1);
+        fclose(fp2);
+        return 1;
+    }
+}
+
+
+char test_1[][20] = {
         "LD F6,34(R2)",
         "LD F2,45(R3)",
         "MUL F0,F2,F4",
-        "SUB F8,F6,F2",
+        "SUB F8,F2,F6",
         "DIV F10,F0,F6",
         "ADD F6,F8,F2"
 
     };
 
-    //printf("%s",inputInstructions[5]);
+//RAW
 
+char test_2[][20] = {
+        "LD F6,34(R2)",
+        "LD F2,25(R1)",
+        "MUL F6,F2,F4",
+        "SUB F8,F10,F6",
+        "DIV F10,F0,F6",
+        "ADD F6,F8,F2"
+};
+
+//WAW
+
+char test_3[][20] = {
+        "LD F6,34(R2)",
+        "SD F2,25(R1)",
+        "MUL F6,F2,F4",
+        "SUB F4,F10,F6",
+        "DIV F10,F0,F6",
+        "ADD F6,F8,F2"
+};
+
+//WAR
+
+
+//如果要添加指令，请在这添加指令数组
+
+void main (){
+
+    char inputInstructions[6][20];
+    char inputInstructionscopy[6][20];
+    int test_case = 0;
+
+    printf("Press（1，2，3）to select a test case|Press 0 to enter instructions\n");
+    scanf("%d",&test_case);
+
+    if(test_case == 1) memcpy(inputInstructions, test_1, sizeof(test_1));
+
+    if(test_case == 2) memcpy(inputInstructions, test_2, sizeof(test_1));
+
+    if(test_case == 3) memcpy(inputInstructions, test_3, sizeof(test_1));
+
+    if(test_case == 0){
+        printf("Enter the instruction:\n");
+        for(int i = 0 ;i<INSTRUCTION_AMOUNT;i++){
+            fgets(inputInstructions[i], sizeof(inputInstructions), stdin);
+
+            // 去掉换行符
+            inputInstructions[i][strcspn(inputInstructions[i], "\n")] = '\0';
+        }
+        memcpy(inputInstructionscopy, inputInstructions, sizeof(inputInstructions));
+    }
+
+
+    printf("test case:\n");
+
+    for(int i = 0 ; i<INSTRUCTION_AMOUNT ; i++){
+        printf("%s\n",inputInstructions[i]);
+    }
+
+    printf("press a key to continue  ");
+    system("pause");
 
     Instruction instructionsList[INSTRUCTION_AMOUNT];
 
 
 
-    for (short i = 0; i < 6; i++){
+    for (int i = 0; i < 6; i++){
         instructionsList[i] = extractInstruction(inputInstructions[i]);
     }
 
     Register registers[REG_AMOUNT];
     for (int i = 0; i < REG_AMOUNT; i++){
         registers[i].busyBy = -1;
-        registers[i].value = i;
+        registers[i].value = -1;
     }
     //初始化寄存器表
 
     Station reservationStations[STATIONS_N] = {
-        {0, 1, 0, 0, -1},
-        {0, 1, 0, 0, -1},
-        {0, 2, 0, 0, -1},
-        {0, 2, 0, 0, -1},
-        {0, 3, 0, 0, -1},
-        {0, 3, 0, 0, -1},
-        {0, 3, 0, 0, -1},
-        {0, 4, 0, 0, -1},
-        {0, 4, 0, 0, -1}};
+        {0, 1, 0, 0, -1, 1, 1, -1, -1},
+        {0, 1, 0, 0, -1, 1, 1, -1, -1},
+        {0, 2, 0, 0, -1, 1, 1, -1, -1},
+        {0, 2, 0, 0, -1, 1, 1, -1, -1},
+        {0, 3, 0, 0, -1, 1, 1, -1, -1},
+        {0, 3, 0, 0, -1, 1, 1, -1, -1},
+        {0, 3, 0, 0, -1, 1, 1, -1, -1},
+        {0, 4, 0, 0, -1, 1, 1, -1, -1},
+        {0, 4, 0, 0, -1, 1, 1, -1, -1}};
 
     //初始化保留站
 
@@ -440,9 +375,11 @@ void main (){
     int clock = 1;
 
 
+
     while(1){
 
         Instruction currentInstruction = instructionsList[currentPos];
+
 
 
         if (currentPos < INSTRUCTION_AMOUNT){
@@ -450,31 +387,29 @@ void main (){
             int stationIndex = dispatchInstruction(reservationStations, currentInstruction, clock, currentPos);//尝试让该条指令流出
 
             if (stationIndex != -1){
+
                 instructionsList[currentPos].issuedT = clock;
                 currentPos += 1;
-                //logInstructionStep(0, currentPos);//调用 logInstructionStep 函数记录指令步骤。
-            }
-            else{
-                //logDependecy(currentPos + 1);//调用 logDependecy 函数记录指令依赖。
-            }
-        }
 
-        printf("currentPos:%d\n",currentPos);
+            }
+
+        }
         //将当前指令分派到一个空闲的保留站,尝试让该条指令流出
 
         for (int i = 0; i < STATIONS_N; i++){
-                printf("station:%s|busy:%d\n",stationName[i],reservationStations[i].busy);
+
+            //printf("station:%s|busy:%d\n",stationName[i],reservationStations[i].busy);
+
             if (reservationStations[i].busy == 0){
-                printf("保留站不忙（busy 为 0），跳过该保留站，继续检查下一个\n");
+                //printf("保留站不忙（busy 为 0），跳过该保留站，继续检查下一个\n");
                 continue;
             }
             //如果保留站不忙（busy 为 0），跳过该保留站，继续检查下一个。
 
             if (reservationStations[i].instruction.issuedT == clock){
-                printf("这个周期刚流出，不执行\n");
+                //printf("这个周期刚流出，不执行\n");
                 continue;
-            }
-            //如果这个周期刚流出，不执行
+            }//如果这个周期刚流出，不执行
 
             int targetReg = -1;
             int srcReg1 = -1;
@@ -485,8 +420,6 @@ void main (){
 
             if(instType == 0){
                 targetReg = reservationStations[i].instruction.twoReg.targetReg;
-                srcReg1 = reservationStations[i].instruction.twoReg.srcReg1;
-                srcReg2 = srcReg1;
             }
             if(instType == 1){
                 targetReg = reservationStations[i].instruction.threeReg.targetReg;
@@ -498,110 +431,175 @@ void main (){
             if (reservationStations[i].instruction.startedT == -1){
 
                 if (isRegisterFree(registers[targetReg], i) == 0){
-                    printf("target被占用\n");
-                    continue;
-                }
-                if (isRegisterFree(registers[srcReg1], i) == 0){
-                    printf("src1被占用\n");
+                    //printf("target被占用\n");
                     continue;
                 }
 
-                if (instType == 1 && isRegisterFree(registers[srcReg2], i) == 0){
-                    printf("src2被占用\n");
-                    continue;
+
+                if(instType == 1){
+
+                    if (reservationStations[i].depend1 != -1 && reservationStations[i].src1 == 0){
+                        //printf("src1被占用\n");
+                        continue;
+                    }
+
+                    if (reservationStations[i].depend2 != -1 && reservationStations[i].src2 == 0){
+                        //printf("src2被占用\n");
+                        continue;
+                    }
+
                 }
 
-                registers[targetReg].busyBy = i;
-                //logInstructionStep(1, reservationStations[i].debugInstructionLine);
                 reservationStations[i].instruction.startedT = clock;
                 instructionsList[reservationStations[i].instIndex].startedT = clock;
-                printf("开始执行指令\n");
+
+                //printf("开始执行指令\n");
                 continue;
             }
             //处理保留站中已准备好执行的指令,检查指令的状态和相关寄存器的使用情况，决定是否可以开始执行指令
 
-            if (reservationStations[i].instruction.writtenT == clock){
-                //logInstructionStep(3, reservationStations[i].debugInstructionLine);
-                printf("写回，释放targetReg，释放保留站\n");
-                registers[targetReg].busyBy = -1;
-                reservationStations[i].busy = 0;
-                instructionsList[reservationStations[i].instIndex].writtenT = clock;
-                continue;
-            }
-            //将targetReg设置为空闲,释放保留站
 
-            if ((reservationStations[i].instruction.startedT + getOperationTime(reservationStations[i].instruction.operation)) <= clock){
+
+            if ((reservationStations[i].instruction.startedT + getOperationTime(reservationStations[i].instruction.operation)-1) <= clock && reservationStations[i].instruction.writtenT == -1){
                 //开始时间 + 执行时间 <= 当前时钟周期，说明指令已经完成
-                //logInstructionStep(2, reservationStations[i].debugInstructionLine);
-                /*
-                int op  = reservationStations[i].instruction.operation;
-                int result = 0;
-
-                if(op == 1 || op == 2){
-                    registers[targetReg].value = registers[srcReg1].value;
-                    break;
-                }
-
-                if(op == 3){
-                    result = registers[srcReg1].value + registers[srcReg2].value;
-                    registers[targetReg].value = result;
-                    break;
-                }
-
-                if(op == 4){
-                    result = registers[srcReg1].value - registers[srcReg2].value;
-                    registers[targetReg].value = result;
-                    break;
-                }
-
-                if(op == 5){
-                    result = registers[srcReg1].value * registers[srcReg2].value;
-                    registers[targetReg].value = result;
-                    break;
-                }
-
-                if(op == 6){
-                    if(registers[srcReg2].value == 0){
-                        result = registers[srcReg1].value / 1;
-                        registers[targetReg].value = result;
-                    }else{
-                        result = registers[srcReg1].value / registers[srcReg2].value;
-                        registers[targetReg].value = result;
-                    }
-                    break;
-                }
-                */
                 reservationStations[i].instruction.finishedT = clock;
                 instructionsList[reservationStations[i].instIndex].finishedT = clock;
                 reservationStations[i].instruction.writtenT = clock + 1;
-                printf("指令已经完成\n");
+                //printf("指令已经完成\n");
                 continue;
 
             }
+
 
 
         }
 
-        //logRegisters(registers, reservationStations);
-        //logStations(reservationStations);
-        //loginfo(clock,inputInstructions,instructionsList,reservationStations,registers);
-        printf("cycle:%d finished\n===============================================================================\n",clock);
 
 
-        char inputInstructions[][20] = {
-            "LD F6,34(R2)",
-            "LD F2,45(R3)",
-            "MUL F0,F2,F4",
-            "SUB F8,F6,F2",
-            "DIV F10,F0,F6",
-            "ADD F6,F8,F2"
 
-        };
+        for (int i = 0; i< STATIONS_N; i++){
+
+            if (reservationStations[i].instruction.writtenT == clock){
+                int targetReg = -1;
+
+                int instType = getType(reservationStations[i].instruction.operation);
+
+                if(instType == 0){
+                    targetReg = reservationStations[i].instruction.twoReg.targetReg;
+                }
+                if(instType == 1){
+                    targetReg = reservationStations[i].instruction.threeReg.targetReg;
+                }
+                //printf("写回，释放targetReg，释放保留站\n");
+
+                if(registers[targetReg].busyBy == i){
+                    registers[targetReg].busyBy = -1;
+                    registers[targetReg].value = reservationStations[i].instIndex+1;
+                }
+                //广播
+                for(int j =0; j<STATIONS_N; j++){
+                    if(reservationStations[j].src1 == 0 && reservationStations[j].depend1 == i){
+                        reservationStations[j].src1 = reservationStations[i].instIndex+1;
+                        reservationStations[j].depend1 = -1;
+                    }
+                    if(reservationStations[j].src2 == 0 && reservationStations[j].depend2 == i){
+                        reservationStations[j].src2 = reservationStations[i].instIndex+1;
+                        reservationStations[j].depend2 = -1;
+                    }
+
+                }
+
+                reservationStations[i].busy = 0;
+                reservationStations[i].src1 = 0;
+                reservationStations[i].src2 = 0;
+                reservationStations[i].depend1 = -1;
+                reservationStations[i].depend2 = -1;
+                instructionsList[reservationStations[i].instIndex].writtenT = clock;
+
+
+                continue;
+
+            }
+            //将targetReg设置为空闲,释放保留站
+
+
+        }
+
+
+        for(int i = 0;i <STATIONS_N; i++){
+            if(reservationStations[i].instruction.issuedT == clock){
+
+                if (reservationStations[i].busy == 0 ){
+                    //printf("保留站不忙（busy 为 0），跳过该保留站，继续检查下一个\n");
+                    continue;
+                }
+
+
+                //初始化与当前指令相关的寄存器编号
+                Instruction issued_inst = reservationStations[i].instruction;
+
+
+                int instType = getType(issued_inst.operation);
+
+                int targetReg = -1;
+                int srcReg1 = -1;
+                int srcReg2 = -1;
+
+                int issued_inst_type = getType(issued_inst.operation);
+                if(issued_inst_type == 0){
+                    targetReg = issued_inst.twoReg.targetReg;
+                }
+                if(issued_inst_type == 1){
+                    targetReg = issued_inst.threeReg.targetReg;
+                }
+
+                registers[targetReg].busyBy = i;
+
+                if(issued_inst_type == 1){
+                    srcReg1 = reservationStations[i].instruction.threeReg.srcReg1;
+                    srcReg2 = reservationStations[i].instruction.threeReg.srcReg2;
+
+                if (isRegisterFree(registers[srcReg1], i) == 0 && registers[srcReg1].value == -1){
+                    //printf("src1被占用\n");
+                    reservationStations[i].src1 = 0;
+                    reservationStations[i].depend1 = registers[srcReg1].busyBy;
+                }else{
+                    reservationStations[i].depend1 = -1;
+                    reservationStations[i].src1 = registers[srcReg1].value;
+                }
+
+
+                if (isRegisterFree(registers[srcReg2], i) == 0 && registers[srcReg2].value == -1){
+                    //printf("src2被占用\n");
+                    reservationStations[i].src2 = 0;
+                    reservationStations[i].depend2 = registers[srcReg2].busyBy;
+                }else{
+                    reservationStations[i].depend2 = -1;
+                    reservationStations[i].src2 = registers[srcReg2].value;
+                }
+            }
+
+            }
+        }
+
+        if(test_case == 1) memcpy(inputInstructions, test_1, sizeof(test_1));
+
+        if(test_case == 2) memcpy(inputInstructions, test_2, sizeof(test_1));
+
+        if(test_case == 3) memcpy(inputInstructions, test_3, sizeof(test_1));
+
+        if(test_case == 0) memcpy(inputInstructions, inputInstructionscopy,sizeof(inputInstructionscopy));
+
+        printf("\n===============================================================================\n");
+
+
+
+
 
 
         printf("Cycle:%d\n",clock);
 
-        printf("\n            Instruction Statue\n");
+        printf("\n             Instruction Statue\n");
         printf("Instruction         Issue  Start  finish write  \n");
         for(int i =0; i<INSTRUCTION_AMOUNT; i++){
             printf("%-20s",inputInstructions[i]);
@@ -613,11 +611,133 @@ void main (){
         }
 
 
+        printf("-----------------------------------------------------------------------");
+
+        printf("\n                  Reservations Station\n");
+        printf("Name    Busy    Op        Vj        Vk        Qj        Qk        \n");
+        for(int i = 0; i < STATIONS_N; i++){
+            printf("%-8s",stationName[i]);
+        if(reservationStations[i].busy == 0){
+            printf("no      \n");
+        }else{
+            printf("yes     ");
+            printf("%-10s",instName[reservationStations[i].instruction.operation-1]);
+            //Instruction in = instList[reservationStations[i].instIndex];
+
+            int intype = getType(reservationStations[i].instruction.operation);
+            int targetReg = -1;
+            int srcReg1 = -1;
+            int srcReg2 = -1;
+
+            if(intype == 0){
+
+                srcReg1 = reservationStations[i].instruction.twoReg.srcReg1;
+                printf("R[R");
+                printf("%-2d",srcReg1);
+                printf("]    ");
+                printf("                              ");
+            }
+
+            if(intype == 1){
+                srcReg1 = reservationStations[i].instruction.threeReg.srcReg1;
+                srcReg2 = reservationStations[i].instruction.threeReg.srcReg2;
+
+                if (reservationStations[i].src1 != 0  && reservationStations[i].src2 != 0){
+
+                    if(reservationStations[i].src1 == -1){
+                        printf("R[F");
+                        printf("%-2d",srcReg1);
+                        printf("]    ");
+                    }else{
+                        printf("D");
+                        printf("%-9d",reservationStations[i].src1);
+                    }
+                    if(reservationStations[i].src2 == -1){
+                        printf("R[F");
+                        printf("%-2d",srcReg2);
+                        printf("]    ");
+                    }else{
+                        printf("D");
+                        printf("%-9d",reservationStations[i].src2);
+                    }
+
+                    printf("                    ");
+                }
+                if (reservationStations[i].src1 != 0  && reservationStations[i].src2 == 0){
+
+                    if(reservationStations[i].src1 == -1){
+                        printf("R[F");
+                        printf("%-2d",srcReg1);
+                        printf("]    ");
+                    }else{
+                        printf("D");
+                        printf("%-9d",reservationStations[i].src1);
+                    }
+
+                    printf("                    ");
+                    printf("%-10s",stationName[reservationStations[i].depend2]);
+                }
+                if (reservationStations[i].src1 == 0  && reservationStations[i].src2 != 0){
+                    printf("          ");
+
+                    if(reservationStations[i].src2 == -1){
+                        printf("R[F");
+                        printf("%-2d",srcReg2);
+                        printf("]    ");
+                    }else{
+                        printf("D");
+                        printf("%-9d",reservationStations[i].src2);
+                    }
+
+                    printf("%-10s",stationName[reservationStations[i].depend1]);
+                    printf("          ");
+                }
+                if (reservationStations[i].src1 == 0  && reservationStations[i].src2 == 0){
+                    printf("                    ");
+                    printf("%-10s",stationName[reservationStations[i].depend1]);
+                    printf("%-10s",stationName[reservationStations[i].depend2]);
+                }
+
+            }
+            printf("\n");
+        }
 
 
 
+        }
+
+        printf("-----------------------------------------------------------------------");
 
 
+        printf("\n                     Register\n");
+        for (int i = 0; i < REG_AMOUNT; i+= 2){
+            printf("F");
+            printf("%-2d",i);
+            printf("       ");
+        }
+        printf("\n");
+
+        for (int i = 0; i < REG_AMOUNT; i += 2){
+            if(registers[i].value == -1){
+                printf("          ");
+            }else{
+                printf("D");
+                printf("%-9d",registers[i].value);
+            }
+        }
+
+        printf("\n");
+
+        for (int i = 0; i < REG_AMOUNT; i += 2){
+            if(registers[i].busyBy == -1){
+                printf("          ");
+            }else{
+                printf("%-10s",stationName[registers[i].busyBy]);
+            }
+        }
+        printf("\n");
+
+        //输出结束
 
         clock += 1;
 
@@ -630,11 +750,22 @@ void main (){
                 if (reservationStations[i].busy == 1)
                     allDone = 0;
             }
-            if (allDone == 1)
+            if (allDone == 1){
+
+                const char *file1 = "out.txt";
+                const char *file2 = "ans.txt";
+
+                int result = compareFiles(file1, file2);
+                if (result == 0) {
+                    printf("The output is correct.\n");
+                } else if (result == 1) {
+                    printf("The output is incorrect.\n");
+                }
+
                 return 0;
+            }
+
         }
-
-
         if (clock >= 1000)
             return 0;
 
