@@ -1,0 +1,4983 @@
+1
+test case:
+LD F6,34(R2)
+LD F2,45(R3)
+MUL F0,F2,F4
+SUB F8,F2,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+press a key to continue  请按任意键继续. . .
+
+===============================================================================
+Cycle:1
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1
+LD F2,45(R3)
+MUL F0,F2,F4
+SUB F8,F2,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   yes     LD        R[R2 ]
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+                              Load1
+
+===============================================================================
+Cycle:2
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2
+LD F2,45(R3)        2
+MUL F0,F2,F4
+SUB F8,F2,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   yes     LD        R[R2 ]
+Load2   yes     LD        R[R3 ]
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+          Load2               Load1
+
+===============================================================================
+Cycle:3
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3
+LD F2,45(R3)        2      3
+MUL F0,F2,F4        3
+SUB F8,F2,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   yes     LD        R[R2 ]
+Load2   yes     LD        R[R3 ]
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   yes     MUL                 R[F4 ]    Load2
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+Mult1     Load2               Load1
+
+===============================================================================
+Cycle:4
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4
+MUL F0,F2,F4        3
+SUB F8,F2,F6        4
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   yes     LD        R[R3 ]
+Store1  no
+Store2  no
+Add1    yes     SUB                 D1        Load2
+Add2    no
+Add3    no
+Mult1   yes     MUL                 R[F4 ]    Load2
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+                              D1
+Mult1     Load2                         Add1
+
+===============================================================================
+Cycle:5
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3
+SUB F8,F2,F6        4
+DIV F10,F0,F6       5
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       D2        D1
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D1
+Mult1                                   Add1      Mult2
+
+===============================================================================
+Cycle:6
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6
+SUB F8,F2,F6        4      6
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       D2        D1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D1
+Mult1                         Add2      Add1      Mult2
+
+===============================================================================
+Cycle:7
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6
+SUB F8,F2,F6        4      6
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       D2        D1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D1
+Mult1                         Add2      Add1      Mult2
+
+===============================================================================
+Cycle:8
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6
+SUB F8,F2,F6        4      6      8
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       D2        D1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D1
+Mult1                         Add2      Add1      Mult2
+
+===============================================================================
+Cycle:9
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    yes     ADD       D4        D2
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D1        D4
+Mult1                         Add2                Mult2
+
+===============================================================================
+Cycle:10
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    yes     ADD       D4        D2
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D1        D4
+Mult1                         Add2                Mult2
+
+===============================================================================
+Cycle:11
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    yes     ADD       D4        D2
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D1        D4
+Mult1                         Add2                Mult2
+
+===============================================================================
+Cycle:12
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      10     12
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    yes     ADD       D4        D2
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D1        D4
+Mult1                         Add2                Mult2
+
+===============================================================================
+Cycle:13
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+Mult1                                             Mult2
+
+===============================================================================
+Cycle:14
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+Mult1                                             Mult2
+
+===============================================================================
+Cycle:15
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV                 D1        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+Mult1                                             Mult2
+
+===============================================================================
+Cycle:16
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:17
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:18
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:19
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:20
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:21
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:22
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:23
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:24
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:25
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:26
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:27
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:28
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:29
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:30
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:31
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:32
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:33
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:34
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:35
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:36
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:37
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:38
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:39
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:40
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:41
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:42
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:43
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:44
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:45
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:46
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:47
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:48
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:49
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:50
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:51
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:52
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:53
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:54
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:55
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:56
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17     56
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       D3        D1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:57
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,45(R3)        2      3      4      5
+MUL F0,F2,F4        3      6      15     16
+SUB F8,F2,F6        4      6      8      9
+DIV F10,F0,F6       5      17     56     57
+ADD F6,F8,F2        6      10     12     13
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+D3        D2                  D6        D4        D5
+2
+test case:
+LD F6,34(R2)
+LD F2,25(R1)
+MUL F6,F2,F4
+SUB F8,F10,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+press a key to continue  请按任意键继续. . .
+
+===============================================================================
+Cycle:1
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1
+LD F2,25(R1)
+MUL F6,F2,F4
+SUB F8,F10,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   yes     LD        R[R2 ]
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+                              Load1
+
+===============================================================================
+Cycle:2
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2
+LD F2,25(R1)        2
+MUL F6,F2,F4
+SUB F8,F10,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   yes     LD        R[R2 ]
+Load2   yes     LD        R[R1 ]
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+          Load2               Load1
+
+===============================================================================
+Cycle:3
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3
+LD F2,25(R1)        2      3
+MUL F6,F2,F4        3
+SUB F8,F10,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   yes     LD        R[R2 ]
+Load2   yes     LD        R[R1 ]
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   yes     MUL                 R[F4 ]    Load2
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+          Load2               Mult1
+
+===============================================================================
+Cycle:4
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4
+MUL F6,F2,F4        3
+SUB F8,F10,F6       4
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   yes     LD        R[R1 ]
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL                 R[F4 ]    Load2
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+          Load2               Mult1     Add1
+
+===============================================================================
+Cycle:5
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Mult1     Add1      Mult2
+
+===============================================================================
+Cycle:6
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:7
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:8
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:9
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:10
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:11
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:12
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:13
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:14
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:15
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:16
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]    D3
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:17
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]    D3
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:18
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]    D3
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:19
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]    D3
+Add2    yes     ADD                 D2        Add1
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                              Add2      Add1      Mult2
+
+===============================================================================
+Cycle:20
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    yes     ADD       D4        D2
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                            D4
+                              Add2                Mult2
+
+===============================================================================
+Cycle:21
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    yes     ADD       D4        D2
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                            D4
+                              Add2                Mult2
+
+===============================================================================
+Cycle:22
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    yes     ADD       D4        D2
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                            D4
+                              Add2                Mult2
+
+===============================================================================
+Cycle:23
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    yes     ADD       D4        D2
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                            D4
+                              Add2                Mult2
+
+===============================================================================
+Cycle:24
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:25
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:26
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:27
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:28
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:29
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:30
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:31
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:32
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:33
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:34
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:35
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:36
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:37
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:38
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:39
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:40
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:41
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:42
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:43
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:44
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:45
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:46
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:47
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:48
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:49
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:50
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:51
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:52
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:53
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:54
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:55
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:56
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17     56
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4
+                                                  Mult2
+
+===============================================================================
+Cycle:57
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+LD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F8,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17     56     57
+ADD F6,F8,F2        6      21     23     24
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6        D4        D5
+3
+test case:
+LD F6,34(R2)
+SD F2,25(R1)
+MUL F6,F2,F4
+SUB F4,F10,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+press a key to continue  请按任意键继续. . .
+
+===============================================================================
+Cycle:1
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1
+SD F2,25(R1)
+MUL F6,F2,F4
+SUB F4,F10,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   yes     LD        R[R2 ]
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+                              Load1
+
+===============================================================================
+Cycle:2
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2
+SD F2,25(R1)        2
+MUL F6,F2,F4
+SUB F4,F10,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   yes     LD        R[R2 ]
+Load2   no
+Store1  yes     SD        R[R1 ]
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+          Store1              Load1
+
+===============================================================================
+Cycle:3
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3
+SD F2,25(R1)        2      3
+MUL F6,F2,F4        3
+SUB F4,F10,F6
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   yes     LD        R[R2 ]
+Load2   no
+Store1  yes     SD        R[R1 ]
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   yes     MUL                 R[F4 ]    Store1
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+          Store1              Mult1
+
+===============================================================================
+Cycle:4
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4
+MUL F6,F2,F4        3
+SUB F4,F10,F6       4
+DIV F10,F0,F6
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  yes     SD        R[R1 ]
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL                 R[F4 ]    Store1
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+
+          Store1    Add1      Mult1
+
+===============================================================================
+Cycle:5
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                    Add1      Mult1               Mult2
+
+===============================================================================
+Cycle:6
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD       R[F8 ]    D2
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                    Add1      Add2                Mult2
+
+===============================================================================
+Cycle:7
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD       R[F8 ]    D2
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                    Add1      Add2                Mult2
+
+===============================================================================
+Cycle:8
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD       R[F8 ]    D2
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                    Add1      Add2                Mult2
+
+===============================================================================
+Cycle:9
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7      9
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    yes     ADD       R[F8 ]    D2
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2
+                    Add1      Add2                Mult2
+
+===============================================================================
+Cycle:10
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:11
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:12
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:13
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:14
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:15
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]                        Mult1
+Add2    no
+Add3    no
+Mult1   yes     MUL       D2        R[F4 ]
+Mult2   yes     DIV       R[F0 ]                        Mult1
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:16
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4
+DIV F10,F0,F6       5
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]    D3
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:17
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]    D3
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:18
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]    D3
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:19
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    yes     SUB       R[F10]    D3
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2                  D6
+                    Add1                          Mult2
+
+===============================================================================
+Cycle:20
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:21
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:22
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:23
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:24
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:25
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:26
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:27
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:28
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:29
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:30
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:31
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:32
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:33
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:34
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:35
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:36
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:37
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:38
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:39
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:40
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:41
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:42
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:43
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:44
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:45
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:46
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:47
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:48
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:49
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:50
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:51
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:52
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:53
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:54
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:55
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:56
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17     56
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   yes     DIV       R[F0 ]    D3
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6
+                                                  Mult2
+
+===============================================================================
+Cycle:57
+
+             Instruction Statue
+Instruction         Issue  Start  finish write
+LD F6,34(R2)        1      2      3      4
+SD F2,25(R1)        2      3      4      5
+MUL F6,F2,F4        3      6      15     16
+SUB F4,F10,F6       4      17     19     20
+DIV F10,F0,F6       5      17     56     57
+ADD F6,F8,F2        6      7      9      10
+-----------------------------------------------------------------------
+                  Reservations Station
+Name    Busy    Op        Vj        Vk        Qj        Qk
+Load1   no
+Load2   no
+Store1  no
+Store2  no
+Add1    no
+Add2    no
+Add3    no
+Mult1   no
+Mult2   no
+-----------------------------------------------------------------------
+                     Register
+F0        F2        F4        F6        F8        F10       F12
+          D2        D4        D6                  D5
