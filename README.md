@@ -61,12 +61,13 @@ Tomasulo 仿真器支持的指令数、指令长度、保留站数量以及寄�
 
 Tomasulo 算法仿真器支持识别以下六种类型的指令：
 
-SD Fx,y(Rz)：将寄存器 Fx 的数据存储到地址 Rz + y 的内存位置。
-LD Fx,y(Rz)：将地址 Rz + y 的内存数据加载到寄存器 Fx。
-ADD Fx,Fy,Fz：计算寄存器 Fy 和 Fz 的和，并将结果存入寄存器 Fx。
-SUB Fx,Fy,Fz：计算寄存器 Fy 和 Fz 的差，并将结果存入寄存器 Fx。
-DIV Fx,Fy,Fz：将寄存器 Fy 的值除以寄存器 Fz 的值，并将结果存入寄存器 Fx。
-MUL Fx,Fy,Fz：计算寄存器 Fy 和 Fz 的乘积，并将结果存入寄存器 Fx。
+1. SD Fx,y(Rz)：将寄存器 Fx 的数据存储到地址 Rz + y 的内存位置。
+2. LD Fx,y(Rz)：将地址 Rz + y 的内存数据加载到寄存器 Fx。
+3. ADD Fx,Fy,Fz：计算寄存器 Fy 和 Fz 的和，并将结果存入寄存器 Fx。
+4. SUB Fx,Fy,Fz：计算寄存器 Fy 和 Fz 的差，并将结果存入寄存器 Fx。
+5. DIV Fx,Fy,Fz：将寄存器 Fy 的值除以寄存器 Fz 的值，并将结果存入寄存器 Fx。
+6. MUL Fx,Fy,Fz：计算寄存器 Fy 和 Fz 的乘积，并将结果存入寄存器 Fx。
+
 程序内置了三个测试案例，测试案例如下：
 
 案例1："LD F6,34(R2)" "LD F2,45(R3)" "MUL F0,F2,F4" "SUB F8,F2,F6" "DIV F10,F0,F6" "ADD F6,F8,F2"
