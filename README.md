@@ -21,6 +21,7 @@ The Tomasulo algorithm simulator support recognizing the following six types of 
 6. MUL Fx,Fy,Fz
 
 The program has three built-in test cases. The test cases are as follows:
+
 case1:
 "LD F6,34(R2)"
 "LD F2,45(R3)"
@@ -28,6 +29,7 @@ case1:
 "SUB F8,F2,F6"
 "DIV F10,F0,F6"
 "ADD F6,F8,F2"
+
 case2:
 "LD F6,34(R2)"
 "LD F2,25(R1)"
@@ -35,6 +37,7 @@ case2:
 "SUB F8,F10,F6"
 "DIV F10,F0,F6"
 "ADD F6,F8,F2"
+
 case3:
 "LD F6,34(R2)"
 "SD F2,25(R1)"
